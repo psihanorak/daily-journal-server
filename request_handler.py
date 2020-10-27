@@ -1,4 +1,4 @@
-from entries.request import get_all_entries, get_single_entry, delete_entry, search_entry
+from entries.request import get_all_entries, get_single_entry, delete_entry, search_entry, create_journal_entry
 from moods.request import get_all_moods, get_single_mood, delete_mood
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
@@ -62,7 +62,7 @@ class HandleRequests(BaseHTTPRequestHandler):
                 if id is not None:
                     response = f"{get_single_mood(id)}"
                 else:
-                    response -f"{get_all_moods()}"
+                    response = f"{get_all_moods()}"
 
         elif len(parsed) == 3:
             ( resource, key, value ) = parsed
@@ -74,11 +74,19 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     def do_POST(self):
         self._set_headers(201)
-
         content_len = int(self.headers.get('content-length', 0))
         post_body = self.rfile.read(content_len)
-        response = f"received post request:<br>{post_body}"
-        self.wfile.write(response.encode())
+
+        post_body = json.loads(post_body)
+        
+        (resource, id) = self.parse_url(self.path)
+
+        new_entry = None
+
+        if resource == "entries":
+            new_entry = create_journal_entry(post_body)
+
+        self.wfile.write(f"{new_entry}".encode())
 
     def do_PUT(self):
         self.do_POST()

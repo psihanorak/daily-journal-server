@@ -22,3 +22,4 @@ INSERT INTO `moods` VALUES (null, "Happy");
 INSERT INTO `moods` VALUES (null, "Sad");
 INSERT INTO `moods` VALUES (null, "Angry");
 INSERT INTO `moods` VALUES (null, "Ok");
+INSERT INTO `moods` VALUES (null, "Ecstatic");

@@ -12,7 +12,7 @@ def get_all_moods():
         SELECT
             m.id,
             m.label
-        FROM Mood m
+        FROM moods m
         """)
 
         moods = []
@@ -35,7 +35,7 @@ def get_single_mood(id):
         SELECT
             m.id,
             m.label
-        FROM Mood m
+        FROM moods m
         WHERE m.id = ?
         """, (id, ))
 
@@ -50,6 +50,6 @@ def delete_mood(id):
         db_cursor = conn.cursor()
 
         db_cursor.execute("""
-        DELETE FROM Mood
+        DELETE FROM mood
         WHERE id = ?
         """, (id, ))        

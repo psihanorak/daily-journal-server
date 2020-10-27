@@ -1,1 +1,1 @@
-from .journal_entries import Journal_Entries
+from .entry import Entry

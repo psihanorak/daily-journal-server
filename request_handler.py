@@ -1,4 +1,4 @@
-from entries.request import get_all_entries, get_single_entry, delete_entry, search_entry, create_journal_entry
+from entries.request import get_all_entries, get_single_entry, delete_entry, search_entry, create_journal_entry, update_entry
 from moods.request import get_all_moods, get_single_mood, delete_mood
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
@@ -78,7 +78,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         post_body = self.rfile.read(content_len)
 
         post_body = json.loads(post_body)
-        
+
         (resource, id) = self.parse_url(self.path)
 
         new_entry = None
@@ -89,7 +89,23 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.wfile.write(f"{new_entry}".encode())
 
     def do_PUT(self):
-        self.do_POST()
+        content_len = int(self.headers.get('content-length', 0))
+        post_body = self.rfile.read(content_len)
+        post_body = json.loads(post_body)
+
+        (resource, id) = self.parse_url(self.path)
+    
+        success = False
+
+        if resource == "entries":
+            success = update_entry(id, post_body)
+        
+        if success:
+            self._set_headers(204)
+        else:
+            self._set_headers(404)
+
+        self.wfile.write("".encode())
 
     def do_DELETE(self):
         self._set_headers(204)

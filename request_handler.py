@@ -1,18 +1,41 @@
-from entries.request import get_all_entries
+from entries.request import get_all_entries, get_single_entry
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
+import json
 
-# Here's a class. It inherits from another class.
 class HandleRequests(BaseHTTPRequestHandler):
+    def parse_url(self, path):
+        path_params = path.split("/")
+        resource = path_params[1]
 
-    # Here's a class function
+        if "?" in resource:
+
+            param = resource.split("?")[1]
+            resource = resource.split("?")[0]
+            pair = param.split("=")
+            key = pair[0]
+            value = pair[1]
+
+            return ( resource, key, value )
+
+        else:
+            id = None
+
+            try:
+                id = int(path_params[2])
+            except IndexError:
+                pass
+            except ValueError:
+                pass
+
+            return (resource, id)
+
     def _set_headers(self, status):
         self.send_response(status)
         self.send_header('Content-type', 'application/json')
         self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
 
-    # Another method! This supports requests with the OPTIONS verb.
     def do_OPTIONS(self):
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
@@ -20,25 +43,22 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept')
         self.end_headers()
 
-    # Here's a method on the class that overrides the parent's method.
-    # It handles any GET request.
     def do_GET(self):
-        # Set the response code to 'Ok'
         self._set_headers(200)
+        response = {}
+        
+        (resource, id) = self.parse_url(self.path)
 
-        # It's an if..else statement
-        if self.path == "/entries":
-            response = get_all_entries()
-        else:
-            response = []
+        if resource == "entries":
+            if id is not None:
+                response = f"{get_single_entry(id)}"
 
-        # This weird code sends a response back to the client
+            else:
+                response = f"{get_all_entries()}"
+
         self.wfile.write(f"{response}".encode())
 
-    # Here's a method on the class that overrides the parent's method.
-    # It handles any POST request.
     def do_POST(self):
-        # Set response code to 'Created'
         self._set_headers(201)
 
         content_len = int(self.headers.get('content-length', 0))
@@ -46,15 +66,9 @@ class HandleRequests(BaseHTTPRequestHandler):
         response = f"received post request:<br>{post_body}"
         self.wfile.write(response.encode())
 
-
-    # Here's a method on the class that overrides the parent's method.
-    # It handles any PUT request.
     def do_PUT(self):
         self.do_POST()
 
-
-# This function is not inside the class. It is the starting
-# point of this application.
 def main():
     host = ''
     port = 8088

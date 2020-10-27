@@ -1,4 +1,4 @@
-from entries.request import get_all_entries, get_single_entry, delete_entry
+from entries.request import get_all_entries, get_single_entry, delete_entry, search_entry
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 import json
@@ -47,14 +47,23 @@ class HandleRequests(BaseHTTPRequestHandler):
         self._set_headers(200)
         response = {}
         
-        (resource, id) = self.parse_url(self.path)
+        parsed = self.parse_url(self.path)
 
-        if resource == "entries":
-            if id is not None:
-                response = f"{get_single_entry(id)}"
+        if len(parsed) == 2:
+            ( resource, id ) = parsed
 
-            else:
-                response = f"{get_all_entries()}"
+            if resource == "entries":
+                if id is not None:
+                    response = f"{get_single_entry(id)}"
+
+                else:
+                    response = f"{get_all_entries()}"
+
+        elif len(parsed) == 3:
+            ( resource, key, value ) = parsed
+
+            if key == "q" and resource == "entries":
+                response = search_entry(value)
 
         self.wfile.write(f"{response}".encode())
 

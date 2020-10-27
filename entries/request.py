@@ -1,4 +1,5 @@
 from models.entry import Entry
+from models.mood import Mood
 
 import sqlite3
 import json
@@ -15,8 +16,12 @@ def get_all_entries():
             e.concept,
             e.entry,
             e.date,
-            e.moodId
+            e.moodId,
+            m.id id,
+            m.label mood
         FROM entries e
+        JOIN moods m
+            ON m.id = e.moodId
         """)
 
         entries = []
@@ -26,6 +31,8 @@ def get_all_entries():
         for row in dataset:
             entry = Entry(row['id'], row['concept'], row['entry'],
                           row['date'], row['moodId'])
+
+            mood = Mood(row['moodId'], row['mood'])
             
             entries.append(entry.__dict__)
 

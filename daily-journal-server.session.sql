@@ -12,11 +12,11 @@ CREATE TABLE `moods` (
   `label` TEXT NOT NULL
 );
 
-INSERT INTO `entries` VALUES (1, "1235", "123", 1598458543321, 1);
-INSERT INTO `entries` VALUES (2, "abc", "123", 1598458548239, 2);
-INSERT INTO `entries` VALUES (3, "Delete", "Now Deleting", 1598458559152, 1);
-INSERT INTO `entries` VALUES (4, "Angry", "jlj", 1598557358781, 3);
-INSERT INTO `entries` VALUES (5, "678", "Now Deleting", 1598557373697, 4);
+INSERT INTO `entries` VALUES (null, "1235", "123", 1598458543321, 1);
+INSERT INTO `entries` VALUES (null, "abc", "123", 1598458548239, 2);
+INSERT INTO `entries` VALUES (null, "Delete", "Now Deleting", 1598458559152, 1);
+INSERT INTO `entries` VALUES (null, "Angry", "jlj", 1598557358781, 3);
+INSERT INTO `entries` VALUES (null, "678", "Now Deleting", 1598557373697, 4);
 
 INSERT INTO `moods` VALUES (null, "Happy");
 INSERT INTO `moods` VALUES (null, "Sad");

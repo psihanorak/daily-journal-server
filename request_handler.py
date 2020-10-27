@@ -1,4 +1,5 @@
 from entries.request import get_all_entries, get_single_entry, delete_entry, search_entry
+from moods.request import get_all_moods, get_single_mood, delete_mood
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 import json
@@ -55,9 +56,13 @@ class HandleRequests(BaseHTTPRequestHandler):
             if resource == "entries":
                 if id is not None:
                     response = f"{get_single_entry(id)}"
-
                 else:
                     response = f"{get_all_entries()}"
+            elif resource == "moods":
+                if id is not None:
+                    response = f"{get_single_mood(id)}"
+                else:
+                    response -f"{get_all_moods()}"
 
         elif len(parsed) == 3:
             ( resource, key, value ) = parsed
@@ -85,6 +90,8 @@ class HandleRequests(BaseHTTPRequestHandler):
 
         if resource == "entries":
             delete_entry(id)
+        elif resource == "moods":
+            delete_mood(id)
 
         self.wfile.write("".encode())
 

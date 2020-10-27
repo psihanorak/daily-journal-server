@@ -123,3 +123,24 @@ def create_journal_entry(new_entry):
         new_entry['id'] = id
 
     return json.dumps(new_entry)
+
+def update_entry(id, entry):
+    with sqlite3.connect("./daily-journal.db") as conn:
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        UPDATE entries
+            SET
+                concept = ?,
+                entry = ?,
+                date = ?,
+                moodId = ?
+        WHERE id == ?
+        """, (entry['concept'], entry['entry'], entry['date'], entry['moodId'], id,))
+
+        rows_affected = db_cursor.rowcount
+
+    if rows_affected == 0:
+        return False
+    else:
+        return True
